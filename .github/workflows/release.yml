@@ -34,7 +34,7 @@ jobs:
         with:
           useConfigFile: true
           updateAssemblyInfo: true
-          configFilePath: GitVersion.yml
+          targetPath: src/AzureFunction.Isolated.HostConfigurator
 
       - name: Build the package
         run: dotnet build src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release
