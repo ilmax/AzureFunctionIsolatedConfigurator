@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- NOTE this has to stay on net6.0 since it's loaded by the func.dll that targets net6.0 -->
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AzureFunction.Isolated.HostConfigurator\AzureFunction.Isolated.HostConfigurator.csproj" />
+  </ItemGroup>
+
+</Project>

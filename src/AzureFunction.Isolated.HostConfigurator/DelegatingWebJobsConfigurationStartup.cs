@@ -3,11 +3,14 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
 using AzureFunction.Isolated.HostConfigurator;
-using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.Loader;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 [assembly: WebJobsStartup(typeof(DelegatingWebJobsConfigurationStartup))]
-[assembly: ExtensionInformation("AzureFunction.Isolated.HostConfigurator", "1.0.0", true)]
+[assembly: ExtensionInformation("AzureFunction.Isolated.HostConfigurator", ProjectConstants.Version, true)]
 
 namespace AzureFunction.Isolated.HostConfigurator;
 
@@ -15,14 +18,15 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
 {
     public void Configure(WebJobsBuilderContext context, IWebJobsConfigurationBuilder builder)
     {
+#if DEBUG
+        Debugger.Launch();
+#endif
 
-//#if DEBUG
-//        Debugger.Launch();
-//#endif
+        var applicationRootPath = context.ApplicationRootPath;
 
         var tmpConfig = new ConfigurationBuilder()
-            .AddJsonFile(Path.Combine(context.ApplicationRootPath, "host.json"), optional: true)
-            .AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), optional: true)
+            .AddJsonFile(Path.Combine(applicationRootPath, "host.json"), optional: true)
+            .AddJsonFile(Path.Combine(applicationRootPath, "appsettings.json"), optional: true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -35,7 +39,9 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
         {
             targetAssemblyName = $"{targetAssemblyName}.dll";
         }
-        Assembly assembly = Assembly.LoadFrom(Path.Combine(context.ApplicationRootPath, targetAssemblyName));
+
+        using var resolver = new AssemblyResolver(applicationRootPath);
+        Assembly assembly = Assembly.LoadFrom(Path.Combine(applicationRootPath, targetAssemblyName));
 
         var attribute = assembly.GetCustomAttribute<HostConfiguratorAttribute>();
         if (attribute is null)
@@ -51,6 +57,33 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
         else
         {
             throw new InvalidOperationException($"Type {attribute.ConfiguratorType.AssemblyQualifiedName} does not implement IWebJobsConfigurationStartup.");
+        }
+    }
+
+    class AssemblyResolver : IDisposable
+    {
+        private readonly string _functionPath;
+
+        public AssemblyResolver(string functionPath)
+        {
+            _functionPath = functionPath;
+            AssemblyLoadContext.Default.Resolving += OnResolvingAssembly;
+        }
+
+        private Assembly? OnResolvingAssembly(AssemblyLoadContext context, AssemblyName name)
+        {
+            var assemblyPath = Path.Combine(_functionPath, $"{name.Name}.dll");
+            Debugger.Break();
+            if (File.Exists(assemblyPath))
+            {
+                return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+            }
+            return null;
+        }
+
+        public void Dispose()
+        {
+            AssemblyLoadContext.Default.Resolving -= OnResolvingAssembly;
         }
     }
 }

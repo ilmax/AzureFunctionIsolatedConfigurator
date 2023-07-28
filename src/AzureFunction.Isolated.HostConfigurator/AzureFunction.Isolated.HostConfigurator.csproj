@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Version>1.0.0</Version>
@@ -12,7 +12,6 @@
       dotnet-isolated process similarly to the In-Process model.</Description>
     <Authors>Massimiliano Donini</Authors>
     <PackageId>AzureFunction.Isolated.HostConfigurator</PackageId>
-    <Version>1.0.0</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageTags>Azure, Azure Functions, dotnet-isolated</PackageTags>
     <PackageProjectUrl>https://github.com/ilmax/AzureFunctionIsolatedConfigurator</PackageProjectUrl>
@@ -29,6 +28,12 @@
 	
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\AzureFunction.Isolated.HostConfigurator.SourceGen\AzureFunction.Isolated.HostConfigurator.SourceGen.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>
   </ItemGroup>
 
 </Project>
