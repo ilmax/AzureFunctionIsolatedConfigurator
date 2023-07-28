@@ -2,9 +2,9 @@ name: Build and test 🧪
 
 on:
   pull_request:
+  push:
     branches:
       - main
-  push:
 
 jobs:
   build:
@@ -22,13 +22,16 @@ jobs:
         with:
           dotnet-version: | 
             6.0.x
-            7.0.x
+            7.0.x            
 
-      - name: Install dependencies
-        run: dotnet restore
+      - name: Build the package
+        run: dotnet build src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release
 
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
+      - name: Configure global dotnet source
+        run: dotnet nuget add source ${{ github.workspace }}/src/AzureFunction.Isolated.HostConfigurator/bin/Release -n local 
+
+      - name: Build the solution
+        run: dotnet build --configuration Release
 
       - name: Test
         run: dotnet test --no-restore --no-build --verbosity normal --configuration Release
