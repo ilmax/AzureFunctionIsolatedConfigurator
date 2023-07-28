@@ -1,0 +1,55 @@
+name: Publish NuGet Package ⚒️
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: | 
+            6.0.x
+            7.0.x        
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        id: gitversion # id to later be referenced
+        uses: gittools/actions/gitversion/execute@v0
+        with:
+          useConfigFile: true
+          updateAssemblyInfo: true
+          configFilePath: GitVersion.yml
+
+      - name: Build package
+        run: dotnet pack -c Release -o ./artifacts \
+          -property:Version=${{ steps.gitversion.outputs.AssemblySemVer }} \
+          -property:FileVersion=${{ steps.gitversion.outputs.AssemblySemVer }} \
+          -property:AssemblyVersion=${{ steps.gitversion.outputs.AssemblySemVer }} \
+          -property:InformationalVersion=${{ steps.gitversion.outputs.InformationalVersion }} \
+          -property:PackageVersion=${{ steps.gitversion.outputs.SemVer }}
+
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: ${{steps.gitversion.outputs.SemVer}}
+          prerelease: false
+          title: 'Release version ${{steps.gitversion.outputs.SemVer}}'
+
+      - name: Publish package
+        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json

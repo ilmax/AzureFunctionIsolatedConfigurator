@@ -1,0 +1,19 @@
+{
+  "profiles": {
+    "FunctionApp1": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7186",
+      "environmentVariables": {
+        "AZURE_FUNCTIONS_ENVIRONMENT": "Test",
+        "test": "envvar"
+      },
+      "nativeDebugging": true
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 33369,
+      "useSSL": false
+    }
+  }
+}

@@ -1,0 +1,3 @@
+{
+    "dotnet.defaultSolution": "AzureFunction.Isolated.HostConfigurator.sln"
+}
