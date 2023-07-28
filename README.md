@@ -19,9 +19,30 @@ You need to specify a type that implements the interface `IWebJobsConfigurationS
 > If you are targeting .net 7.0, you can use the generic version of the attribute `[HostConfiguratorAttribute<T>]` which will allow you to specify the type of the configurator directly in the attribute.
 
 ## Usage
-1. Add the package `AzureFunctions.Extensions.Configuration` to your project.
-2. Implement the interface `IWebJobsConfigurationStartup` from the package `Microsoft.Azure.WebJobs` in your project.
+1. Install the package `AzureFunction.Isolated.HostConfigurator` into your Azure Functions dotnet-isolated project.
+```
+dotnet add package AzureFunction.Isolated.HostConfigurator
+```
+2. Create a class and implement the interface `IWebJobsConfigurationStartup` from the package `Microsoft.Azure.WebJobs` in your project.
+```csharp
+internal class StartupExtension : IWebJobsConfigurationStartup
+{
+    public void Configure(WebJobsBuilderContext context, IWebJobsConfigurationBuilder builder)
+    {
+        // Please note the usage of the context.ApplicationRootPath to get the path to the application root, where we can find our configuration files
+        builder.ConfigurationBuilder
+            .AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), optional: false, reloadOnChange: false)
+            .AddJsonFile(Path.Combine(context.ApplicationRootPath, $"appsettings.{context.EnvironmentName}.json"), optional: false, reloadOnChange: false)
+            .AddEnvironmentVariables();
+    }
+}
+```
+
 3. Add the attribute `[HostConfiguratorAttribute(typeof(TheTypeToBeInvoked))]` to your project.
+
+```csharp
+[assembly: HostConfigurator<StartupExtension>]
+```
 
 ## Caveats
 If you need to call `AddJsonFile('appsettings.json')`, make sure to call `Path.Combine(context.ApplicationRootPath, "appsettings.json")` because the host will not be running from the same directory your code is running from.
@@ -29,4 +50,4 @@ If you need to call `AddJsonFile('appsettings.json')`, make sure to call `Path.C
 For now, your assembly will be loaded twice, once in the host process and once by the Azure Functions host, so if you have any static initialization code, it may potentially be called twice. This is a known issue and will be fixed in the future potentially using the `AssemblyLoadContext` functionality. A simple workaround may be to define a standalone assembly that contains the configuration code instead of adding the type in your functions code directly.
 
 ## Samples
-Check the [/samples](samples) folder for a sample project.
+Check the [/samples](https://github.com/ilmax/AzureFunctionIsolatedConfigurator/tree/main/samples/FunctionApp1) folder for a sample project.
