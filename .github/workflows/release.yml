@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: "write"
   pull-requests: "read"
 
 jobs:
@@ -45,15 +44,6 @@ jobs:
 
       - name: Run dotnet pack
         run: dotnet pack src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release -o ./artifacts 
-
-      - uses: 'marvinpinto/action-automatic-releases@latest'
-        with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: ${{steps.gitversion.outputs.SemVer}}
-          prerelease: false
-          title: 'Release version ${{steps.gitversion.outputs.SemVer}}'
-          files: |
-            ./artifacts/*.nupkg
 
       - name: Publish package
         run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
