@@ -7,7 +7,7 @@ on:
   push:
 
 jobs:
-  buid:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency:
@@ -19,6 +19,10 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: | 
+            6.0.x
+            7.0.x
 
       - name: Install dependencies
         run: dotnet restore
