@@ -36,8 +36,11 @@ jobs:
           updateAssemblyInfo: true
           configFilePath: GitVersion.yml
 
+      - name: Build the package
+        run: dotnet build src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release
+
       - name: Build package
-        run: dotnet pack src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj -c Release -o ./artifacts 
+        run: dotnet pack src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release -o ./artifacts 
 
       - uses: 'marvinpinto/action-automatic-releases@latest'
         with:
