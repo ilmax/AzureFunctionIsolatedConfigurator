@@ -33,8 +33,8 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0
         with:
           useConfigFile: true
-          updateAssemblyInfo: true
           targetPath: src/AzureFunction.Isolated.HostConfigurator
+          additionalArguments: '/updateprojectfiles=true'
 
       - name: Build the package
         run: dotnet build src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release
