@@ -34,7 +34,7 @@ jobs:
         with:
           useConfigFile: true
           targetPath: src/AzureFunction.Isolated.HostConfigurator
-          additionalArguments: '/updateprojectfiles=true'
+          additionalArguments: '/updateprojectfiles true'
 
       - name: Build the package
         run: dotnet build src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release
