@@ -7,7 +7,13 @@ The problem is that the host process needs the connection before it calls into y
 Both of these options may not be sufficient to cover your scenario so this package helps you solve that.
 
 ## How it works
-Azure Functions using the dotnet-isolated hosting model will load the extensions that your project references and will initialize the extensions before trying resolving the connection strings. This package implements an extension that will delegate the configuration to a type that you specify in your project using the assembly attribute `[HostConfiguratorAttribute(typeof(TheTypeToBeInvoked))]`.
+Azure Functions using the dotnet-isolated hosting model will load the extensions that your project references and will initialize the extensions before trying to resolve the connection strings.
+
+This step happens inside the `AddScriptHost` method of the `ScriptHostBuilderExtensions` when the host calls the `HasExternalConfigurationStartups()` method. (the code I'm talking about here is in the [azure-function-host](https://github.com/Azure/azure-functions-host) project on GitHub [here](https://github.com/Azure/azure-functions-host/blob/dev/src/WebJobs.Script/ScriptHostBuilderExtensions.cs).
+
+So this package essentially hooks into that functionality to allow you to customize the host configuration before it's used'.
+
+This package implements a WebJob extension that will delegate the configuration to a type that you specify in your project using the assembly attribute `[HostConfiguratorAttribute(typeof(TheTypeToBeInvoked))]`.
 You need to specify a type that implements the interface `IWebJobsConfigurationStartup` from the package `Microsoft.Azure.WebJobs` in the attribute, this type will then be invoked by this extension allowing you to add additional configuration sources to the host configuration.
 
 > If you are targeting .net 7.0, you can use the generic version of the attribute `[HostConfiguratorAttribute<T>]` which will allow you to specify the type of the configurator directly in the attribute.
