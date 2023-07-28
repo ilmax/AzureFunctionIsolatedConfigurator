@@ -40,10 +40,10 @@ jobs:
           targetPath: src/AzureFunction.Isolated.HostConfigurator
           additionalArguments: '/updateprojectfiles true'
 
-      - name: Build the package
+      - name: Run dotnet build
         run: dotnet build src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release
 
-      - name: Build package
+      - name: Run dotnet pack
         run: dotnet pack src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj --configuration Release -o ./artifacts 
 
       - uses: 'marvinpinto/action-automatic-releases@latest'
@@ -55,5 +55,5 @@ jobs:
           files: |
             ./artifacts/*.nupkg
 
-      # - name: Publish package
-      #   run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+      - name: Publish package
+        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
