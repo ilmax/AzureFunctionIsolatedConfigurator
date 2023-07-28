@@ -37,12 +37,7 @@ jobs:
           configFilePath: GitVersion.yml
 
       - name: Build package
-        run: dotnet pack src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj -c Release -o ./artifacts \
-          -property:Version=${{ steps.gitversion.outputs.AssemblySemVer }} \
-          -property:FileVersion=${{ steps.gitversion.outputs.AssemblySemVer }} \
-          -property:AssemblyVersion=${{ steps.gitversion.outputs.AssemblySemVer }} \
-          -property:InformationalVersion=${{ steps.gitversion.outputs.InformationalVersion }} \
-          -property:PackageVersion=${{ steps.gitversion.outputs.SemVer }}
+        run: dotnet pack src/AzureFunction.Isolated.HostConfigurator/AzureFunction.Isolated.HostConfigurator.csproj -c Release -o ./artifacts 
 
       - uses: 'marvinpinto/action-automatic-releases@latest'
         with:
