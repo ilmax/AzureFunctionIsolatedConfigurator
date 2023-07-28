@@ -3,4 +3,6 @@ mode: Mainline
 branches: {}
 ignore:
   sha: []
-merge-message-formats: {}
+merge-message-formats: {
+  github: 'Merge pull request #\d+ from'
+}
