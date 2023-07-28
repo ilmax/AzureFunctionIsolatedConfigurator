@@ -79,7 +79,7 @@ public class DelegatingWebjobsConfigurationStartupTests
 
     private WebJobsBuilderContext GetWebJobsBuilderContext() => new()
     {
-        ApplicationRootPath = Path.GetDirectoryName(Environment.ProcessPath),
+        ApplicationRootPath = Environment.CurrentDirectory,
         Configuration = new ConfigurationBuilder().Build(),
         EnvironmentName = "Development"
     };

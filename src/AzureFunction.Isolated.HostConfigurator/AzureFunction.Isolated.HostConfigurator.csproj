@@ -12,7 +12,7 @@
       dotnet-isolated process similarly to the In-Process model.</Description>
     <Authors>Massimiliano Donini</Authors>
     <PackageId>AzureFunction.Isolated.HostConfigurator</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.0</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageTags>Azure, Azure Functions, dotnet-isolated</PackageTags>
     <PackageProjectUrl>https://github.com/ilmax/AzureFunctionIsolatedConfigurator</PackageProjectUrl>
@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.37" />
   </ItemGroup>
 	
-	 <ItemGroup>
+  <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
