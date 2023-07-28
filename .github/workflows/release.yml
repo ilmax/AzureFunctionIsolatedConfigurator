@@ -29,7 +29,7 @@ jobs:
           versionSpec: '5.x'
 
       - name: Determine Version
-        id: gitversion # id to later be referenced
+        id: gitversion # id to be referenced in the next step
         uses: gittools/actions/gitversion/execute@v0
         with:
           useConfigFile: true
@@ -51,5 +51,5 @@ jobs:
           prerelease: false
           title: 'Release version ${{steps.gitversion.outputs.SemVer}}'
 
-      - name: Publish package
-        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+      # - name: Publish package
+      #   run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
