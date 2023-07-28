@@ -3,6 +3,10 @@ name: Publish NuGet Package ⚒️
 on:
   workflow_dispatch:
 
+permissions:
+  contents: "write"
+  pull-requests: "read"
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -48,6 +52,8 @@ jobs:
           automatic_release_tag: ${{steps.gitversion.outputs.SemVer}}
           prerelease: false
           title: 'Release version ${{steps.gitversion.outputs.SemVer}}'
+          files: |
+            ./artifacts/*.nupkg
 
       # - name: Publish package
       #   run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
