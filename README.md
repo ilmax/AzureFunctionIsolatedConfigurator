@@ -4,7 +4,7 @@ The problem is that the host process needs the connection before it calls into y
 - Use an environment variable
 - Use a `local.settings.json` file
 
-Both of these options may not be sufficient to cover your scenario so this package helps you work around this limitation that will hopefully be resolved soon on the Azure Functions side.
+Both of these options may not be sufficient to cover your scenario so this package helps you work around this limitation that will hopefully be resolved soon on the Azure Functions side. See [this issue](https://github.com/Azure/azure-functions-dotnet-worker/issues/1790) and [this issue](https://github.com/MicrosoftDocs/azure-docs/issues/95950) for context.
 
 ## How it works
 Azure Functions using the dotnet-isolated hosting model will load the extensions that your project references and will initialize the extensions before trying to resolve the connection strings.
