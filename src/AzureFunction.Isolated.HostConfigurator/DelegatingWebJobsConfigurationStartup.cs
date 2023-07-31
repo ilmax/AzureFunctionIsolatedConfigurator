@@ -73,7 +73,6 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
         private Assembly? OnResolvingAssembly(AssemblyLoadContext context, AssemblyName name)
         {
             var assemblyPath = Path.Combine(_functionPath, $"{name.Name}.dll");
-            Debugger.Break();
             if (File.Exists(assemblyPath))
             {
                 return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
