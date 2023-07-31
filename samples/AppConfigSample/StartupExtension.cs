@@ -1,12 +1,12 @@
-﻿using AzureFunction.Isolated.HostConfigurator;
-using FunctionApp1;
+﻿using AppConfigSample;
+using AzureFunction.Isolated.HostConfigurator;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
 
-[assembly: HostConfigurator<StartupExtension>]
+[assembly: HostConfigurator(typeof(StartupExtension))]
 
-namespace FunctionApp1;
+namespace AppConfigSample;
 
 internal class StartupExtension : IWebJobsConfigurationStartup
 {

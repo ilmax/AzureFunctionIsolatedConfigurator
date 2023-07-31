@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionApp1", "samples\FunctionApp1\FunctionApp1.csproj", "{F014FE27-26CB-414E-8325-DFD80252DEE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppConfigSample", "samples\AppConfigSample\AppConfigSample.csproj", "{F014FE27-26CB-414E-8325-DFD80252DEE6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunction.Isolated.HostConfigurator", "src\AzureFunction.Isolated.HostConfigurator\AzureFunction.Isolated.HostConfigurator.csproj", "{513692BA-A45E-451D-A0AF-803B9728ECAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunction.Isolated.HostConfigurator.Tests", "tests\AzureFunction.Isolated.HostConfigurator.Tests\AzureFunction.Isolated.HostConfigurator.Tests.csproj", "{24D6C0CD-3018-4F38-982D-62B9EB0B7E97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunction.Isolated.HostConfigurator.Tests", "tests\AzureFunction.Isolated.HostConfigurator.Tests\AzureFunction.Isolated.HostConfigurator.Tests.csproj", "{24D6C0CD-3018-4F38-982D-62B9EB0B7E97}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FB2C2CFC-44F0-4F6A-882C-E031BF40575E}"
 EndProject
@@ -15,9 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8E81
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3B120374-20DF-40B6-B229-38BC3B4BC21C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleAssemblyConfiguredWrong", "tests\SampleAssemblyConfiguredWrong\SampleAssemblyConfiguredWrong.csproj", "{337CBA1B-F20E-4FC0-96BD-75841309A5D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAssemblyConfiguredWrong", "tests\SampleAssemblyConfiguredWrong\SampleAssemblyConfiguredWrong.csproj", "{337CBA1B-F20E-4FC0-96BD-75841309A5D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleAssemblyConfiguredRight", "tests\SampleAssemblyConfiguredRight\SampleAssemblyConfiguredRight.csproj", "{39550A5D-C970-4181-822D-FC057A6F09FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAssemblyConfiguredRight", "tests\SampleAssemblyConfiguredRight\SampleAssemblyConfiguredRight.csproj", "{39550A5D-C970-4181-822D-FC057A6F09FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultSample", "samples\KeyVaultSample\KeyVaultSample.csproj", "{E6C646CA-AA3F-49C8-A7A6-62B81770D406}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppConfigDifferentAssemblySample", "samples\AppConfigDifferentAssemblySample\AppConfigDifferentAssemblySample.csproj", "{14C8A76D-C403-47B0-B9AA-136666A7B33B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppConfigDifferentAssemblySampleLibrary", "samples\AppConfigDifferentAssemblySampleLibrary\AppConfigDifferentAssemblySampleLibrary.csproj", "{80ABBB91-0C37-4517-ADEC-18E04D413CD6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunction.Isolated.HostConfigurator.SourceGen", "src\AzureFunction.Isolated.HostConfigurator.SourceGen\AzureFunction.Isolated.HostConfigurator.SourceGen.csproj", "{49CA5D14-E7E4-45E0-8B36-FDC7712A34BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +53,22 @@ Global
 		{39550A5D-C970-4181-822D-FC057A6F09FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39550A5D-C970-4181-822D-FC057A6F09FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39550A5D-C970-4181-822D-FC057A6F09FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6C646CA-AA3F-49C8-A7A6-62B81770D406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6C646CA-AA3F-49C8-A7A6-62B81770D406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6C646CA-AA3F-49C8-A7A6-62B81770D406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6C646CA-AA3F-49C8-A7A6-62B81770D406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14C8A76D-C403-47B0-B9AA-136666A7B33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14C8A76D-C403-47B0-B9AA-136666A7B33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14C8A76D-C403-47B0-B9AA-136666A7B33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14C8A76D-C403-47B0-B9AA-136666A7B33B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80ABBB91-0C37-4517-ADEC-18E04D413CD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80ABBB91-0C37-4517-ADEC-18E04D413CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80ABBB91-0C37-4517-ADEC-18E04D413CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80ABBB91-0C37-4517-ADEC-18E04D413CD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49CA5D14-E7E4-45E0-8B36-FDC7712A34BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49CA5D14-E7E4-45E0-8B36-FDC7712A34BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49CA5D14-E7E4-45E0-8B36-FDC7712A34BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49CA5D14-E7E4-45E0-8B36-FDC7712A34BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +79,10 @@ Global
 		{24D6C0CD-3018-4F38-982D-62B9EB0B7E97} = {3B120374-20DF-40B6-B229-38BC3B4BC21C}
 		{337CBA1B-F20E-4FC0-96BD-75841309A5D5} = {3B120374-20DF-40B6-B229-38BC3B4BC21C}
 		{39550A5D-C970-4181-822D-FC057A6F09FD} = {3B120374-20DF-40B6-B229-38BC3B4BC21C}
+		{E6C646CA-AA3F-49C8-A7A6-62B81770D406} = {8E8172C3-E07C-4156-AA75-EDB4323F97E3}
+		{14C8A76D-C403-47B0-B9AA-136666A7B33B} = {8E8172C3-E07C-4156-AA75-EDB4323F97E3}
+		{80ABBB91-0C37-4517-ADEC-18E04D413CD6} = {8E8172C3-E07C-4156-AA75-EDB4323F97E3}
+		{49CA5D14-E7E4-45E0-8B36-FDC7712A34BA} = {FB2C2CFC-44F0-4F6A-882C-E031BF40575E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67996938-25D1-4AAC-8B47-F7530B71C1D9}

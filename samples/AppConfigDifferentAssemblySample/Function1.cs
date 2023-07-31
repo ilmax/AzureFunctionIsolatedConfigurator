@@ -1,12 +1,12 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace FunctionApp1
+namespace AppConfigDifferentAssemblySample
 {
     public class Function1
     {
         private readonly ILogger _logger;
-        private const string QueueName = "testqueuemax";
+        private const string QueueName = "testqueue";
 
         public Function1(ILoggerFactory loggerFactory)
         {
