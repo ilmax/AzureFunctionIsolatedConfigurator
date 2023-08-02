@@ -1,14 +1,10 @@
-﻿using System.ComponentModel;
-
-namespace AzureFunction.Isolated.HostConfigurator;
+﻿namespace AzureFunction.Isolated.HostConfigurator;
 
 /// <summary>
 /// The assembly attribute used to specify which configurator type to invoke.
 /// </summary>
-[Browsable(false)]
-[EditorBrowsable(EditorBrowsableState.Never)]
-[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false, Inherited = true)]
-public class HostConfiguratorAttribute : Attribute
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
+public sealed class HostConfiguratorAttribute : Attribute
 {
     public HostConfiguratorAttribute(Type configuratorType)
     {
