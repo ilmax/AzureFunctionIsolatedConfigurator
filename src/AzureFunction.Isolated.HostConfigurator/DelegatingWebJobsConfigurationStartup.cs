@@ -67,10 +67,6 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
             var hostDependencies = GetHostDependenciesMessage(assembly);
             throw new InvalidOperationException(message + Environment.NewLine + hostDependencies, ex);
         }
-        finally
-        {
-            resolver.Unload();
-        }
     }
 
     private string GetHostDependenciesMessage(Assembly entryAssembly)
