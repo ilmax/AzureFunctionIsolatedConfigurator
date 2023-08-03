@@ -1,6 +1,7 @@
 ﻿using AzureFunction.Isolated.HostConfigurator;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
+using Microsoft.Extensions.Configuration;
 
 [assembly: HostConfigurator(typeof(MyConfiguration))]
 
@@ -11,15 +12,8 @@ public static class AssemblyNameProviderRight
 
 public class MyConfiguration : IWebJobsConfigurationStartup
 {
-    public MyConfiguration()
-    {
-        Executed = false;
-    }
-
     public void Configure(WebJobsBuilderContext context, IWebJobsConfigurationBuilder builder)
     {
-        Executed = true;
+        builder.ConfigurationBuilder.AddInMemoryCollection();
     }
-
-    public static bool Executed { get; private set; }
 }
