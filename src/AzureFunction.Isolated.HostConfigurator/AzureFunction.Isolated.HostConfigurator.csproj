@@ -19,6 +19,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,9 +32,7 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\AzureFunction.Isolated.HostConfigurator.SourceGen\AzureFunction.Isolated.HostConfigurator.SourceGen.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\AzureFunction.Isolated.HostConfigurator.SourceGen\AzureFunction.Isolated.HostConfigurator.SourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

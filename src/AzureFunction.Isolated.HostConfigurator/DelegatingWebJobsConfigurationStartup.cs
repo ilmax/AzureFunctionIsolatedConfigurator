@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using AzureFunction.Isolated.HostConfigurator;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
+using System.Diagnostics.CodeAnalysis;
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -21,7 +23,6 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
 #if DEBUG
         Debugger.Launch();
 #endif
-
         var applicationRootPath = context.ApplicationRootPath;
 
         var tmpConfig = new ConfigurationBuilder()
@@ -40,49 +41,115 @@ public class DelegatingWebJobsConfigurationStartup : IWebJobsConfigurationStartu
             targetAssemblyName = $"{targetAssemblyName}.dll";
         }
 
-        using var resolver = new AssemblyResolver(applicationRootPath);
-        Assembly assembly = Assembly.LoadFrom(Path.Combine(applicationRootPath, targetAssemblyName));
+        var assemblyPath = Path.Combine(applicationRootPath, targetAssemblyName);
+        var resolver = new HostConfiguratorLoadContext(assemblyPath);
+        var assembly = resolver.LoadFromAssemblyPath(assemblyPath);
 
-        var attribute = assembly.GetCustomAttribute<HostConfiguratorAttribute>();
-        if (attribute is null)
+        try
         {
-            throw new InvalidOperationException($"Missing attribute HostConfiguratorAttribute on the assembly {targetAssemblyName}.");
-        }
+            var attribute = assembly.GetCustomAttribute<HostConfiguratorAttribute>()
+                ?? throw new InvalidOperationException($"Missing attribute HostConfiguratorAttribute on the loaded assembly {assembly.FullName}.");
 
-        var instance = Activator.CreateInstance(attribute.ConfiguratorType);
-        if (instance is IWebJobsConfigurationStartup startup)
-        {
-            startup.Configure(context, builder);
+            var instance = Activator.CreateInstance(attribute.ConfiguratorType);
+            if (instance is IWebJobsConfigurationStartup startup)
+            {
+                startup.Configure(context, builder);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Type {attribute.ConfiguratorType.AssemblyQualifiedName} does not implement IWebJobsConfigurationStartup.");
+            }
         }
-        else
+        catch (Exception ex) when (ex is MissingMemberException or TargetInvocationException or InvalidCastException)
         {
-            throw new InvalidOperationException($"Type {attribute.ConfiguratorType.AssemblyQualifiedName} does not implement IWebJobsConfigurationStartup.");
+            var message = @"Unable to call into user code, this may be due to dependencies version mismatch, 
+                            make sure to reference the same version of the dependencies referenced by the host process, listed below.";
+            var hostDependencies = GetHostDependenciesMessage(assembly);
+            throw new InvalidOperationException(message + Environment.NewLine + hostDependencies, ex);
         }
     }
 
-    class AssemblyResolver : IDisposable
+    private string GetHostDependenciesMessage(Assembly entryAssembly)
     {
-        private readonly string _functionPath;
-
-        public AssemblyResolver(string functionPath)
+        var assemblies = AssemblyLoadContext.Default.Assemblies.OrderBy(a => a.FullName).Select(a => a.GetName()).ToList();
+        var sb = new StringBuilder();
+        foreach (var assembly in assemblies)
         {
-            _functionPath = functionPath;
-            AssemblyLoadContext.Default.Resolving += OnResolvingAssembly;
+            sb.AppendLine(assembly.FullName);
         }
 
-        private Assembly? OnResolvingAssembly(AssemblyLoadContext context, AssemblyName name)
+        if (entryAssembly is not null)
         {
-            var assemblyPath = Path.Combine(_functionPath, $"{name.Name}.dll");
-            if (File.Exists(assemblyPath))
+            foreach (var dependency in entryAssembly.GetReferencedAssemblies())
             {
-                return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+                if (HasAlreadyLoadedDifferentAssemblyVersion(assemblies, dependency, out var loadedAssembly))
+                {
+                    sb.AppendLine($"Check the reference to for {dependency.FullName} and try to use version {loadedAssembly.Version} that's already loaded by the core.");
+                }
             }
-            return null;
         }
 
-        public void Dispose()
+        return sb.ToString();
+    }
+
+    private bool HasAlreadyLoadedDifferentAssemblyVersion(List<AssemblyName> assemblies, AssemblyName dependency, [NotNullWhen(true)]out AssemblyName? loadedAssembly)
+    {
+        var alreadyLoaded = assemblies.FirstOrDefault(a => a.Name == dependency.Name);
+        if (alreadyLoaded != null)
         {
-            AssemblyLoadContext.Default.Resolving -= OnResolvingAssembly;
+            // FullName contains version and culture
+            if (alreadyLoaded.FullName != dependency.FullName)
+            {
+                loadedAssembly = alreadyLoaded;
+                return true;
+            }
+        }
+
+        loadedAssembly = null;
+        return false;
+    }
+
+    class HostConfiguratorLoadContext : AssemblyLoadContext
+    {
+        private readonly AssemblyDependencyResolver _resolver;
+
+        public HostConfiguratorLoadContext(string pluginPath)
+            : base("HostConfiguratorLoadContext", isCollectible: true)
+        {
+            _resolver = new AssemblyDependencyResolver(pluginPath);
+        }
+
+        protected override Assembly Load(AssemblyName assemblyName)
+        {
+            foreach (var ignoredAssembly in Default.Assemblies)
+            {
+                var ignoredName = ignoredAssembly.GetName();
+
+                if (AssemblyName.ReferenceMatchesDefinition(ignoredName, assemblyName))
+                {
+                    return null!;
+                }
+            }
+
+            if (AssemblyName.ReferenceMatchesDefinition(assemblyName, typeof(HostConfiguratorAttribute).Assembly.GetName()))
+            {
+                return null!;
+            }
+
+            var path = _resolver.ResolveAssemblyToPath(assemblyName);
+
+            return path != null
+                ? LoadFromAssemblyPath(path)
+                : null!;
+        }
+
+        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+        {
+            var path = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+
+            return path != null
+                ? LoadUnmanagedDllFromPath(path)
+                : default;
         }
     }
 }

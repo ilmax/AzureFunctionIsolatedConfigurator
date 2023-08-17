@@ -30,7 +30,9 @@ public class DelegatingWebjobsConfigurationStartupTests
         Environment.SetEnvironmentVariable("ConfiguratorAssemblyName", "notexisting.dll");
 
         // Act + Assert
-        Assert.Throws<FileNotFoundException>(() => sut.Configure(ctx, builderMock.Object));
+        var ex = Assert.Throws<InvalidOperationException>(() => sut.Configure(ctx, builderMock.Object));
+        Assert.StartsWith("Dependency resolution failed for component", ex.Message);
+        Assert.Contains("notexisting.dll", ex.Message);
     }
 
     [Fact]
@@ -65,14 +67,14 @@ public class DelegatingWebjobsConfigurationStartupTests
         // Arrange
         var sut = new DelegatingWebJobsConfigurationStartup();
         var ctx = GetWebJobsBuilderContext();
-        var builderMock = GetFakeBuilder();
+        var builder = new MyConfigBuilder();
         Environment.SetEnvironmentVariable("ConfiguratorAssemblyName", AssemblyNameProviderRight.AssemblyName);
 
         // Act
-        sut.Configure(ctx, builderMock.Object);
+        sut.Configure(ctx, builder);
 
         // Assert
-        Assert.True(MyConfiguration.Executed);
+        Assert.Equal(1, builder.ConfigurationBuilder.Sources.Count);
     }
 
     private Mock<IWebJobsConfigurationBuilder> GetFakeBuilder() => new();
@@ -84,5 +86,10 @@ public class DelegatingWebjobsConfigurationStartupTests
         EnvironmentName = "Development"
     };
 
+    class MyConfigBuilder : IWebJobsConfigurationBuilder
+    {
+        readonly ConfigurationBuilder _builder = new();
 
+        public IConfigurationBuilder ConfigurationBuilder => _builder;
+    }
 }
