@@ -1,10 +1,8 @@
 name: Publish NuGet Package ⚒️
 
 on:
-  workflow_dispatch:
-
-permissions:
-  pull-requests: "read"
+  release:
+    types: [published]
 
 jobs:
   release:
